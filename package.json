@@ -1,0 +1,37 @@
+{
+  "name": "kpc",
+  "version": "1.0.0",
+  "description": "Batch script that retrieves folders and file recursively from an FTP server",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MarioPerezH/kpc.git"
+  },
+  "keywords": [
+    "kpc",
+    "ftp",
+    "copy-all",
+    "copy-recursive"
+  ],
+  "author": "Mario Pérez",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/MarioPerezH/kpc/issues"
+  },
+  "homepage": "https://github.com/MarioPerezH/kpc#readme",
+  "devDependencies": {
+    "grunt": "^1.0.1",
+    "grunt-cli": "^1.2.0",
+    "grunt-contrib-clean": "^1.1.0",
+    "grunt-contrib-concat": "^1.0.1",
+    "grunt-contrib-copy": "^1.0.0",
+    "grunt-replace-line": "^1.0.0",
+    "grunt-text-replace": "^0.4.0"
+  }
+}
