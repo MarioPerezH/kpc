@@ -4,6 +4,8 @@ goto :eof
 :download
     call :generateTreeFolders %TXTFOLDERS% %DESTINATTION% %FOLDERBASE%
 
+	type nul>%BATTRANSFERDATA%
+
 	call :writeScriptTransferFiles %TXTFILES% %DESTINATTION% %FOLDERBASE% %BATTRANSFERDATA%
 
 	ftp -s:%BATTRANSFERDATA% %FTP%

@@ -20,10 +20,10 @@ goto :eof
         echo *** DEBUG VARIABLES ****
         echo ************************
         echo ** FTP: %FTP%
-        echo ** SYNC: %SYNC%
-        echo ** EXECUTE: %EXECUTE%
+        echo ** USER: %USER%
+        echo ** PASS: %PASS%
         echo ** POSITION: %POSITION%
-        echo ** folder: %folder%
+        echo ** FOLDERBASE: %FOLDERBASE%
         echo ************************
         echo.
     )

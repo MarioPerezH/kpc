@@ -224,10 +224,10 @@ goto :eof
         echo *** DEBUG VARIABLES ****
         echo ************************
         echo ** FTP: %FTP%
-        echo ** SYNC: %SYNC%
-        echo ** EXECUTE: %EXECUTE%
+        echo ** USER: %USER%
+        echo ** PASS: %PASS%
         echo ** POSITION: %POSITION%
-        echo ** folder: %folder%
+        echo ** FOLDERBASE: %FOLDERBASE%
         echo ************************
         echo.
     )
@@ -248,6 +248,8 @@ goto :eof
 
 :download
     call :generateTreeFolders %TXTFOLDERS% %DESTINATTION% %FOLDERBASE%
+
+	type nul>%BATTRANSFERDATA%
 
 	call :writeScriptTransferFiles %TXTFILES% %DESTINATTION% %FOLDERBASE% %BATTRANSFERDATA%
 
@@ -356,160 +358,6 @@ goto :eof
 
 	ftp -s:%BATTRANSFERDATA% %FTP%
 goto :eof
-
-@echo off
-
-call :%FUNCTION%
-
-goto :eof
-
-:init
-	set folder=%FOLDERBASE%
-
-	call :clean
-
-	call :process
-
-	call :generateTreeFolders %TXTFOLDERS% %DESTINATTION% %FOLDERBASE%
-
-	call :writeScriptTransferFiles %TXTFILES% %DESTINATTION% %FOLDERBASE% %BATTRANSFERDATA%
-
-	call :executeScriptToFTP %FTP% %BATTRANSFERDATA%
-
-	if not "%DEBUG%" == "1" (
-		call :removeTempFiles
-	)
-goto :eof
-
-:process
-	%TRACE% Evaluando arbol para: %folder%
-	
-	call :writeScriptExtractData %USER% %PASS% "%folder%" %BATEXTRACTDATA%
-
-	call :executeScriptToFTP %FTP% %BATEXTRACTDATA%
-	
-	call :filterAndwriteFiles
-	
-	call :filterAndwriteFolders
-	
-	call :getNextFolder %POSITION% folder
-	
-	%TRACE%.
-	
-	if defined folder (
-		set /a position+=1
-		
-		call :process
-	)
-	
-goto :eof
-
-:clean
-	%TRACE% Limpiando archivos temporales
-	
-	call :createFile %TXTFOLDERS%
-	
-	call :createFile %TXTFILES%
-	
-	call :createFile %BATEXTRACTDATA%
-	
-	call :createFile %BATTRANSFERDATA%
-goto :eof
-
-:createFile
-	type nul >%1
-goto :eof
-
-:removeTempFiles
-	del %TXTFOLDERS%
-	
-	del %TXTFILES%
-	
-	del %BATEXTRACTDATA%
-	
-	del %TXTOUTPUT%
-	
-	del %BATTRANSFERDATA%
-goto :eof
-
-:executeScriptToFTP
-	%TRACE% Ejecutando%0
-		
-	ftp -s:%2 %1 
-goto :eof
-
-:writeScriptExtractData
-	%TRACE% Ejecutando%0
-
-	setlocal
-		set user=%1
-		set pass=%2
-		set folder=%3
-		set bat=%4
-
-		echo %USER%> %bat%
-		echo %PASS%>> %bat%
-		echo cd %folder%>> %bat%
-		echo ls -ltr %TXTOUTPUT%>> %bat%
-		echo disconnect>> %bat%
-		echo bye>>%bat%
-	endlocal
-goto :eof
-
-:filterAndwriteFiles
-	%TRACE% Ejecutando%0
-	
-	set cmmd='findstr /C:":" %TXTOUTPUT%'
-	set cmmd='findstr /r /v "<DIR> File(s) Dir(s) Volume Directory of" %TXTOUTPUT%'
-		
-	for /f "tokens=4* delims= " %%a in (%cmmd%) do (
-		
-		echo n:\%folder%\%%a %%b>>%TXTFILES%
-	)
-	
-goto :eof
-
-:filterAndwriteFolders
-	%TRACE% Ejecutando%0
-	
-	set cmmd='findstr /C:"<DIR>" %TXTOUTPUT%'
-		
-	for /f "tokens=4* delims= " %%a in (%cmmd%) do (
-		
-		if not "%%a" == "." if not "%%a" == ".." (
-		
-			set evaluate=%%b
-										
-			if defined evaluate (
-				echo %folder%\%%a %%b>>%TXTFOLDERS%
-			)else (
-				echo %folder%\%%a>>%TXTFOLDERS%
-			)
-		)
-	)
-goto :eof
-	
-:getNextFolder
-	%TRACE% Ejecutando%0
-	
-	setlocal EnableDelayedExpansion
-		set i=0
-		set position=%1
-		set folder=
-		
-		for /f "delims=" %%l in (%TXTFOLDERS%) do (
-			
-			if %POSITION% == !i! (
-				
-				set folder=%%l
-			)
-			
-			set /a i+=1
-		)
-	endlocal & set %2=%folder%
-goto :eof
-
-
 
 call :%1
 goto :eof
