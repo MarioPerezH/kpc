@@ -352,7 +352,7 @@ goto :eof
 :downloadFile
 	%TRACE% Ejecutando%0
 
-	type nul> %BATTRANSFERDATA%	
+	type nul>%BATTRANSFERDATA%	
 	
 	call :writeScriptTransferFiles %TXTFILES% %DESTINATTION% %FOLDERBASE% %BATTRANSFERDATA% %OPTION%
 
